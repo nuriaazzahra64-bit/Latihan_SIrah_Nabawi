@@ -1,0 +1,724 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Kuis Sirah Nabawiyah</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap">
+<style>
+/* Layout: satu kolom sempit (maks 760px). Header dengan tab guru, kartu soal di tengah, navigasi nomor soal di bawahnya. */
+:root{
+  --bg:#F3F7F6; --surface:#FFFFFF; --ink:#13231F; --muted:#586A65; --line:#D5E0DC;
+  --accent:#0B6E64; --accent-ink:#FFFFFF; --accent-soft:#DCEFEB;
+  --good:#1B7F4B; --good-soft:#DDF3E6; --bad:#B3362B; --bad-soft:#FBE4E1;
+  --font-display:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-body:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1715; --surface:#16231F; --ink:#E6F0ED; --muted:#9FB3AD; --line:#2A3D38;
+    --accent:#4FC2B2; --accent-ink:#06201C; --accent-soft:#1B3A35;
+    --good:#5CCB8A; --good-soft:#18362A; --bad:#F0837A; --bad-soft:#3E1F1C;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1715; --surface:#16231F; --ink:#E6F0ED; --muted:#9FB3AD; --line:#2A3D38;
+  --accent:#4FC2B2; --accent-ink:#06201C; --accent-soft:#1B3A35;
+  --good:#5CCB8A; --good-soft:#18362A; --bad:#F0837A; --bad-soft:#3E1F1C;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--font-body)}
+.wrap{max-width:760px;margin:0 auto;padding-block:20px 56px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0}
+p{margin:0}
+[hidden]{display:none!important}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.brand{font:700 15px/1.2 var(--font-display)}
+.brand small{display:block;margin-top:2px;font:500 12px var(--font-body);color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+.tabs{display:flex;gap:4px;padding:3px;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.tabs button{font:600 13px var(--font-body);padding:7px 12px;border:0;border-radius:7px;background:transparent;color:var(--muted);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px}
+.stack{display:grid;gap:16px}
+.eyebrow{font:600 12px var(--font-body);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.note{font-size:14px;color:var(--muted)}
+.note[data-s="saved"]{color:var(--good)}
+.note[data-s="error"]{color:var(--bad)}
+
+.btn{font:600 15px var(--font-body);padding:11px 18px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.small{font-size:13px;padding:6px 10px}
+.btn.danger{color:var(--bad)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn:focus-visible,.cell:focus-visible,.tabs button:focus-visible,input[type="text"]:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row.between{justify-content:space-between}
+
+/* Mulai */
+.lede{font-size:17px;color:var(--muted);max-width:56ch}
+.hero h1{font-size:clamp(28px,6vw,38px);line-height:1.12;font-weight:800;letter-spacing:-.01em}
+.field{display:grid;gap:6px}
+.field label{font:600 14px var(--font-body)}
+.field input{font:400 16px var(--font-body);padding:11px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);width:100%}
+.err{font-size:13px;color:var(--bad)}
+.fields{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+@media (max-width:520px){.fields{grid-template-columns:1fr}}
+.topics{display:grid;gap:0;margin:0;padding:0;list-style:none}
+.topics li{display:flex;gap:14px;padding:9px 0;border-top:1px solid var(--line);font-size:15px}
+.topics li:first-child{border-top:0}
+.topics .rng{flex:none;width:76px;color:var(--muted);font-variant-numeric:tabular-nums;font-weight:500}
+
+/* Kuis */
+.meta{display:flex;justify-content:space-between;gap:12px;font:500 13px var(--font-body);color:var(--muted);margin-bottom:8px;font-variant-numeric:tabular-nums}
+.track{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:18px}
+.fill{height:100%;width:0;background:var(--accent);transition:width .2s}
+@media (prefers-reduced-motion:reduce){.fill{transition:none}}
+.stem{font:600 20px/1.4 var(--font-display);margin-top:6px;white-space:pre-line;text-wrap:pretty}
+.opts{display:grid;gap:10px;margin-top:18px}
+.opt{position:relative;display:flex;gap:12px;align-items:flex-start;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);cursor:pointer}
+.opt:hover{border-color:var(--accent)}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.opt:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.key{flex:none;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font:700 13px var(--font-display);background:var(--bg);color:var(--muted)}
+.opt:has(input:checked) .key{background:var(--accent);color:var(--accent-ink)}
+.txt{min-width:0;overflow-wrap:anywhere;padding-top:3px}
+.pager{display:flex;justify-content:space-between;gap:10px;margin-top:20px}
+.confirm{margin-top:18px;padding:16px;border-radius:12px;background:var(--accent-soft);display:grid;gap:12px}
+details.navbox{margin-top:16px}
+details.navbox summary{cursor:pointer;font:600 14px var(--font-body);padding:4px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:6px;margin-top:12px}
+.cell{height:36px;border-radius:8px;border:1px solid var(--line);background:var(--surface);font:600 13px var(--font-body);font-variant-numeric:tabular-nums;color:var(--muted);cursor:pointer}
+.cell.done{background:var(--accent-soft);border-color:transparent;color:var(--ink)}
+.cell.cur{outline:2px solid var(--accent);outline-offset:1px;color:var(--ink)}
+
+/* Hasil */
+.scoreline{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.big{font:800 64px/1 var(--font-display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.of{font:600 22px var(--font-display);color:var(--muted)}
+.nilai{margin-left:auto;text-align:right}
+.nilai b{display:block;font:800 30px/1 var(--font-display);font-variant-numeric:tabular-nums}
+.nilai span{font-size:12px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+.tbars{display:grid;gap:12px;margin-top:6px}
+.tb .lbl{display:flex;justify-content:space-between;gap:12px;font-size:14px;margin-bottom:4px}
+.tb .lbl span:last-child{font-variant-numeric:tabular-nums;color:var(--muted);flex:none}
+.tb .track{margin:0}
+.rv{border-top:1px solid var(--line);padding:16px 0;display:grid;gap:6px}
+.rv:first-child{border-top:0}
+.rv-head{display:flex;gap:10px;align-items:center}
+.rv-q{font-weight:600;white-space:pre-line;text-wrap:pretty}
+.rv-a{font-size:15px}
+.chip{font:600 12px var(--font-body);padding:3px 9px;border-radius:99px}
+.chip.ok{background:var(--good-soft);color:var(--good)}
+.chip.no{background:var(--bad-soft);color:var(--bad)}
+
+/* Guru */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px}
+.stat{padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.stat b{display:block;font:800 26px/1.1 var(--font-display);font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:14px}
+th,td{text-align:left;padding:9px 10px;border-top:1px solid var(--line);vertical-align:middle}
+th{font:600 12px var(--font-body);color:var(--muted);letter-spacing:.04em;text-transform:uppercase;border-top:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.hard{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.hard li{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:baseline}
+.hard .pct{font:700 15px var(--font-display);font-variant-numeric:tabular-nums;color:var(--bad)}
+.hard .sn{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:14px;color:var(--muted)}
+textarea.tsv{width:100%;min-height:110px;font:12px/1.4 ui-monospace,Menlo,Consolas,monospace;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">Kuis Sirah Nabawiyah<small>Pendidikan Agama Islam</small></div>
+    <div class="tabs" id="tabs" role="tablist" hidden>
+      <button type="button" role="tab" id="tab-kuis" aria-selected="true">Kuis</button>
+      <button type="button" role="tab" id="tab-hasil" aria-selected="false">Hasil peserta</button>
+    </div>
+  </header>
+
+  <!-- Mulai -->
+  <section id="view-start" class="stack">
+    <div class="card hero stack">
+      <div class="stack" style="gap:10px">
+        <span class="eyebrow">50 soal pilihan ganda</span>
+        <h1>Dari wahyu pertama sampai hijrah ke Madinah</h1>
+        <p class="lede">Jawab satu per satu. Jawaban boleh diubah sampai kamu menekan Kirim. Setelah selesai, kamu bisa melihat pembahasan tiap soal.</p>
+      </div>
+      <form id="form-start" class="stack" novalidate>
+        <div class="fields">
+          <div class="field">
+            <label for="nama">Nama lengkap</label>
+            <input type="text" id="nama" name="nama" autocomplete="name" maxlength="60">
+            <span class="err" id="nama-err" hidden>Isi namamu dulu supaya nilainya bisa dikenali.</span>
+          </div>
+          <div class="field">
+            <label for="kelas">Kelas (boleh kosong)</label>
+            <input type="text" id="kelas" name="kelas" maxlength="20" placeholder="mis. 8B">
+          </div>
+        </div>
+        <div class="row">
+          <button class="btn primary" type="submit" id="btn-start">Mulai kuis</button>
+        </div>
+        <p class="note">Nilaimu otomatis tercatat untuk guru kalau halaman ini dibuka dari akun Claude dengan akses Kontributor. Kalau tidak, skor tetap tampil di layarmu.</p>
+      </form>
+    </div>
+    <div class="card">
+      <h2 style="font-size:16px;margin-bottom:8px">Materi yang diujikan</h2>
+      <ul class="topics" id="topics"></ul>
+    </div>
+  </section>
+
+  <!-- Kuis -->
+  <section id="view-quiz" hidden>
+    <div class="card">
+      <div class="meta"><span id="qnum"></span><span id="answered"></span></div>
+      <div class="track"><div class="fill" id="bar"></div></div>
+      <div class="eyebrow" id="topic"></div>
+      <h2 class="stem" id="stem"></h2>
+      <div class="opts" id="opts" role="radiogroup" aria-label="Pilihan jawaban"></div>
+      <div class="pager">
+        <button type="button" class="btn" id="prev">Sebelumnya</button>
+        <button type="button" class="btn primary" id="next">Lanjut</button>
+      </div>
+      <div class="confirm" id="confirm" hidden>
+        <p id="confirm-text"></p>
+        <div class="row">
+          <button type="button" class="btn primary" id="send">Kirim jawaban</button>
+          <button type="button" class="btn" id="recheck">Periksa lagi</button>
+        </div>
+      </div>
+      <details class="navbox">
+        <summary>Daftar soal</summary>
+        <div class="grid" id="grid"></div>
+      </details>
+    </div>
+  </section>
+
+  <!-- Hasil -->
+  <section id="view-result" class="stack" hidden>
+    <div class="card stack">
+      <div class="eyebrow" id="r-who"></div>
+      <div class="scoreline">
+        <span class="big" id="r-score"></span><span class="of" id="r-of"></span>
+        <div class="nilai"><b id="r-nilai"></b><span>nilai (0–100)</span></div>
+      </div>
+      <p class="note" id="save-status" aria-live="polite"></p>
+      <div class="row">
+        <button type="button" class="btn primary" id="retake">Ulangi kuis</button>
+        <button type="button" class="btn" id="other">Ganti peserta</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2 style="font-size:16px;margin-bottom:12px">Skor per materi</h2>
+      <div class="tbars" id="tbars"></div>
+    </div>
+    <div class="card">
+      <div class="row between" style="margin-bottom:6px">
+        <h2 style="font-size:16px" id="rv-title">Pembahasan</h2>
+        <button type="button" class="btn small" id="rv-toggle"></button>
+      </div>
+      <div id="review"></div>
+    </div>
+  </section>
+
+  <!-- Guru -->
+  <section id="view-teacher" class="stack" hidden>
+    <div class="card stack">
+      <div class="row between">
+        <h2 style="font-size:18px">Hasil peserta</h2>
+        <div class="row">
+          <span class="note" id="copy-note" aria-live="polite"></span>
+          <button type="button" class="btn small" id="copy" hidden>Salin tabel</button>
+        </div>
+      </div>
+      <div id="teacher-body" class="stack"></div>
+      <textarea class="tsv" id="tsv" readonly hidden aria-label="Tabel hasil, siap disalin"></textarea>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* Soal: [pertanyaan, [A,B,C,D], indeks jawaban benar, pembahasan] */
+var QUESTIONS = [
+["Wahyu yang pertama kali diturunkan oleh Allah SWT adalah Al-Qur'an Surat ....",["Al-Falaq ayat 1-3","Al-'Alaq ayat 1-5","Al-Kafirun ayat 1-3","Al-Qari'ah ayat 1-5"],1,"Wahyu pertama adalah Surat Al-'Alaq ayat 1-5, diawali perintah Iqra' (bacalah)."],
+["Nabi Muhammad SAW mendapatkan gelar Al-Amin. Kata Al-Amin artinya orang yang dapat ....",["Disuruh","Dilihat","Dipercaya","Ditakuti"],2,"Al-Amin berarti orang yang dapat dipercaya."],
+["Wahyu yang diterima Nabi Muhammad pertama kali saat beliau berada di ....",["Gua Hira","Gua Tsur","Jabal Rahmah","Jabal Nur"],0,"Wahyu pertama turun di Gua Hira saat Nabi beribadah menyendiri."],
+["Dakwah secara sembunyi-sembunyi yang dilakukan Nabi Muhammad SAW berlangsung selama ....",["1 tahun","2 tahun","3 tahun","4 tahun"],2,"Dakwah sembunyi-sembunyi berlangsung sekitar 3 tahun."],
+["Istri Nabi Muhammad SAW yang tergolong Assabiqunal Awwalun adalah ....",["Aisyah","Hafsah","Ummu Salamah","Khadijah"],3,"Khadijah binti Khuwailid adalah orang pertama yang beriman kepada Nabi."],
+["Orang yang mula-mula masuk Islam disebut ....",["Muallaf","Assabiqunal Awwalun","Mukallaf","Murtadin"],1,"Assabiqunal Awwalun berarti orang-orang yang pertama masuk Islam."],
+["Dalam surah Al-Hijr ayat 94, Allah SWT memerintahkan Nabi Muhammad SAW berdakwah dengan ....",["Terang-terangan","Dari rumah ke rumah","Sembunyi-sembunyi","Memaksa untuk memeluk Islam"],0,"Ayat tersebut memerintahkan Nabi menyampaikan dakwah secara terang-terangan."],
+["Allah telah menyempurnakan sifat Nabi Muhammad, sehingga beliau pantas untuk ....",["Dijadikan suri teladan","Bebas untuk berbuat dosa","Seenaknya melakukan maksiat","Tidak melaksanakan shalat"],0,"Nabi adalah uswatun hasanah, teladan terbaik bagi umat."],
+["Walaupun sering dicela dan dicerca kaum kafir Quraisy, Nabi Muhammad tetap bersikap ....",["Tenang dan balas dendam","Mengejeknya balik","Membalas dan memukulnya","Sabar dan memaafkannya"],3,"Nabi menghadapi gangguan dengan sabar dan pemaaf."],
+["Setiap rasul pasti mempunyai sifat Tablig. Lawan kata Tablig adalah ....",["Jahlun","Khianat","Kitman","Kidzib"],2,"Tablig berarti menyampaikan, lawannya Kitman yaitu menyembunyikan."],
+["Allah menugaskan Nabi Muhammad SAW sebagai Sirajan Muniran, maksudnya beliau seperti cahaya yang ....",["Remang-remang","Redup","Menerangi","Panas"],2,"Sirajan Muniran berarti pelita yang menerangi."],
+["Nabi Muhammad SAW tidak pernah membalas orang yang menyakitinya. Beliau selalu ....",["Mendendamnya","Memaafkannya","Menyiksanya","Menghardik"],1,"Beliau dikenal sangat pemaaf."],
+["Apa yang sering dilakukan Nabi Muhammad saat menghadapi masalah?",["Menyerah","Marah","Bersabar","Mengabaikan"],2,"Nabi menghadapi masalah dengan sabar dan tawakal."],
+["Apa ciri khas Nabi Muhammad dalam bersikap terhadap anak-anak?",["Kasar","Tindakan tegas","Ramah dan penuh kasih","Mengabaikan"],2,"Nabi sangat penyayang dan ramah kepada anak-anak."],
+["Nabi Muhammad dikenal memiliki sifat ______ yang berarti tidak mudah marah.",["Pemalu","Murah hati","Sabar","Keras hati"],2,"Sabar berarti mampu menahan diri dan tidak mudah marah."],
+["Salah satu sifat Nabi Muhammad yang membuatnya dicintai banyak orang adalah sifat ....",["Egois","Sombong","Pemaaf","Tidak peduli"],2,"Sifat pemaaf membuat beliau dicintai banyak orang."],
+["Hijrah ke Habasyah adalah hijrah pertama kaum muslim. Hijrah tersebut terjadi pada tahun .... kenabian.",["Kedua","Ketiga","Keempat","Kelima"],3,"Hijrah pertama ke Habasyah terjadi pada tahun kelima kenabian."],
+["Perhatikan pernyataan berikut.\n1) Kekerasan kaum kafir Quraisy terhadap kaum muslim semakin meningkat\n2) Keadaan kaum muslimin sangat memprihatinkan\n3) Kaum muslim akan menjadi umat yang lebih maju\n4) Perintah dari kaum kafir Quraisy\n\nSebab-sebab hijrah ke Habasyah ditunjukkan oleh nomor ....",["1) dan 2)","1) dan 3)","2) dan 3)","2) dan 4)"],0,"Penyebabnya adalah meningkatnya kekerasan Quraisy dan memprihatinkannya keadaan kaum muslimin."],
+["Nama Raja Habasyah saat para sahabat Nabi hijrah ke Habasyah adalah ....",["Raja Namrud","Raja Najasyi","Raja Sulaiman","Raja Fir'aun"],1,"Raja Habasyah yang adil dan melindungi kaum muslim adalah Najasyi (Negus)."],
+["Hijrah ke Habasyah terjadi dalam dua tahap. Berikut yang merupakan tujuan hijrah tersebut adalah ....",["Masyarakat Habasyah adalah orang-orang yang kaya raya","Negeri Habasyah memiliki sumber daya alam yang melimpah","Meminta masyarakat Makkah bekerja di sana agar dapat memelihara Ka'bah","Rasa prihatin Nabi Muhammad Saw terhadap kaumnya karena ancaman kafir Quraisy"],3,"Nabi prihatin atas ancaman Quraisy sehingga menyuruh kaum muslim mencari tempat yang aman."],
+["Pada hijrah tahap ke-2, sahabat Nabi yang berhijrah berjumlah ....",["102","91","88","10"],0,"Pada tahap kedua berhijrah sekitar 83 laki-laki dan 19 perempuan, total 102 orang."],
+["Apa latar belakang utama pemboikotan Bani Hasyim dan Bani Abdul Muthalib?",["Penolakan Bani Hasyim terhadap pajak","Dukungan Bani Hasyim terhadap agama baru yang dibawa Nabi Muhammad","Perselisihan tanah antara Bani Hasyim dan Bani Umayyah","Ketidaksetujuan Bani Abdul Muthalib dengan pemerintah Romawi"],1,"Kedua bani itu melindungi Nabi dan mendukung dakwahnya, sehingga diboikot Quraisy."],
+["Siapa yang memimpin pemboikotan terhadap Bani Hasyim?",["Abu Jahal","Abu Lahab","Utbah bin Rabi'ah","Abu Sufyan"],0,"Menurut buku ajar yang umum dipakai, Abu Jahal disebut sebagai penggerak utama pemboikotan."],
+["Apa yang dimaksud dengan “Amul Huzni”?",["Tahun kematian Nabi Muhammad","Tahun kebaikan dan kemakmuran","Tahun kesedihan","Tahun hijrahnya Nabi Muhammad"],2,"Amul Huzni (tahun kesedihan) adalah tahun wafatnya Khadijah dan Abu Thalib."],
+["Sahabat yang mendapat julukan Pintu Ilmu adalah ....",["Umar bin Khattab","Abu Bakar","Ali bin Abi Thalib","Utsman bin Affan"],2,"Ali bin Abi Thalib dijuluki Babul 'Ilmi (pintu ilmu)."],
+["Apa dampak jangka panjang peristiwa pemboikotan terhadap Islam?",["Membawa keruntuhan Islam di Mekkah","Menguatkan posisi Bani Hasyim di kalangan masyarakat","Memperlemah ajaran Islam","Mengakibatkan perpecahan dalam komunitas Muslim"],1,"Pemboikotan gagal melemahkan Islam dan justru menguatkan simpati serta posisi Bani Hasyim."],
+["Nama hamba sahaya yang menolong Nabi Muhammad dari kejaran penduduk Thaif adalah ....",["Addas","Abas","Asas","Azas"],0,"Addas, hamba sahaya beragama Nasrani, memberi Nabi anggur dan akhirnya beriman."],
+["Sikap penduduk Thaif terhadap dakwah Rasulullah SAW adalah ....",["Menerima dengan lapang dada","Bersuka cita","Pura-pura tidak tahu","Menolak dengan kasar"],3,"Penduduk Thaif menolak dan bahkan melempari Nabi dengan batu."],
+["Mata pencarian penduduk Thaif adalah ....",["Pedagang","Petani","Nelayan","Peternak"],1,"Thaif berhawa sejuk dan subur, penduduknya mayoritas petani."],
+["Sahabat yang menemani Nabi pergi ke Thaif adalah ....",["Zaid bin Haritsah","Maisarah","Abu Thalib","Abu Bakar"],0,"Nabi ditemani Zaid bin Haritsah ke Thaif."],
+["Yang menghasut penduduk Thaif agar menolak Nabi Muhammad SAW adalah ....",["Abu Jahal","Uqais","Utbah","Abu Lahab"],0,"Tokoh Quraisy yang paling keras memusuhi Nabi, Abu Jahal, umumnya disebut sebagai penghasut."],
+["Sebab Nabi pergi ke Thaif adalah ....",["Mendapat tekanan dari kafir Quraisy","Ingin menikah","Liburan","Berdagang"],0,"Tekanan Quraisy makin berat setelah wafatnya Khadijah dan Abu Thalib, sehingga Nabi mencari dukungan di Thaif."],
+["Pada peristiwa Isra Mi'raj, Allah menurunkan perintah untuk ....",["Melaksanakan naik haji","Melakukan zakat","Melaksanakan shalat","Melaksanakan puasa"],2,"Perintah shalat lima waktu diterima Nabi langsung saat Mi'raj."],
+["Isra' adalah ....",["Perjalanan di malam hari","Naik ke atas","Liburan","Jalan-jalan"],0,"Isra' berarti perjalanan malam dari Masjidil Haram ke Masjidil Aqsa. Mi'raj berarti naik ke langit."],
+["Apa nama masjid tujuan Nabi Muhammad SAW dalam peristiwa Isra?",["Masjid Al-Aqsa","Masjid Nabawi","Masjidil Haram","Masjid Taqwa"],0,"Isra dilakukan dari Masjidil Haram menuju Masjid Al-Aqsa."],
+["Peristiwa Isra Mi'raj diabadikan Allah dalam Al-Qur'an surah ....",["Al-Isra': 1","Al-Isra': 2","Al-Isra': 3","Al-Isra': 4"],0,"Isra Mi'raj disebutkan dalam QS. Al-Isra' ayat 1."],
+["Apa nama tempat tertinggi di langit dalam perjalanan Mi'raj?",["Jannah","Baitul Maqdis","Sidratul Muntaha","Al-Qabah"],2,"Sidratul Muntaha adalah batas tertinggi, tempat Nabi menerima perintah shalat."],
+["Isi Baiat Aqabah pertama adalah ....",["Tidak menyekutukan Allah, taat pada Rasul, dan tidak berzina","Menyekutukan Allah, Rasul, dan berzina","Tidak menyekutukan Allah, mendustai Rasul, dan berzina","Menyekutukan Allah, Rasul, dan berjudi"],0,"Baiat pertama berisi janji tidak syirik, tidak mencuri, tidak berzina, dan taat kepada Rasul."],
+["Baiat Aqabah kedua berisi janji setia dan kesanggupan, di antaranya ....",["Tidak mau berinfak, menaati Nabi, dan amar makruf nahi mungkar","Tidak menaati Nabi, tetap tabah, dan menunggu Nabi hijrah ke Yatsrib","Menunggu Nabi hijrah ke Yatsrib, menafkahkan harta, dan tetap sombong","Amar makruf nahi mungkar, menaati Nabi, berjanji menolong dan membela Nabi"],3,"Penduduk Yatsrib berjanji menaati, menolong, dan membela Nabi serta beramar makruf nahi mungkar."],
+["Baiat Aqabah terjadi di ....",["Bukit Tursina","Bukit Aqabah","Masjid Jin","Bukit Marwah"],1,"Baiat dilakukan di Aqabah, sebuah bukit di Mina dekat Makkah."],
+["Pada Baiat Aqabah Kubro, penduduk Yatsrib meminta Nabi Muhammad SAW hijrah ke .... dan menjadi pemimpin mereka di sana.",["Khazraj","Yatsrib","Gua Hira","Makthab"],1,"Mereka mengundang Nabi untuk hijrah ke Yatsrib."],
+["Yang BUKAN kepercayaan masyarakat Yatsrib sebelum hijrah Nabi Muhammad SAW adalah ....",["Agama Yahudi","Agama Nasrani","Kepercayaan terhadap benda-benda","Agama Buddha"],3,"Masyarakat Yatsrib menganut Yahudi, Nasrani, dan penyembahan berhala. Tidak ada penganut Buddha."],
+["Mata uang penduduk Yatsrib adalah ....",["Rupiah","Peso","Dolar","Dinar"],3,"Masyarakat Arab saat itu menggunakan dinar (emas) dan dirham (perak)."],
+["Sebelum Nabi hijrah, mayoritas penduduk Yatsrib berprofesi sebagai ....",["Pedagang","Nelayan","Petani","Peternak"],2,"Yatsrib adalah daerah subur dengan banyak kebun kurma, sehingga mayoritas penduduknya petani."],
+["Sekarang Yatsrib dikenal sebagai kota ....",["Maroko","Rusia","Irak","Madinah"],3,"Setelah hijrah Nabi, Yatsrib diganti namanya menjadi Madinatun Nabi atau Madinah."],
+["Pada tahun berapakah Nabi Muhammad hijrah ke Madinah?",["623 M","622 M","634 M","621 M"],1,"Hijrah ke Madinah terjadi pada tahun 622 M, awal kalender Hijriah."],
+["Pada musim haji tahun ke-13 kenabian, penduduk Yatsrib yang pergi ke Makkah untuk berhaji berjumlah ....",["63 orang","65 orang","73 orang","75 orang"],2,"Jumlahnya 73 laki-laki dan 2 perempuan. Sebagian sumber menyebut 75 orang jika dihitung seluruhnya."],
+["Sebelum hijrah Nabi Muhammad SAW, kota Yatsrib telah dikenal sebagai ....",["Daerah perindustrian","Pusat perdagangan","Daerah pariwisata","Pusat peradaban"],3,"Yatsrib sudah maju dengan sistem pertanian, pasar, dan tatanan sosial, sehingga dikenal sebagai pusat peradaban."],
+["Pengembala domba yang selalu memberikan susu kepada Rasulullah SAW dan Abu Bakar selama di dalam gua adalah ....",["Amir bin Fuhairah","Abdullah bin Mas'ud","Suraqah bin Ju'syum","Abdullah bin Abu Bakar"],0,"Amir bin Fuhairah, pembantu Abu Bakar, menggembalakan kambing dan membawakan susu ke Gua Tsur."],
+["Nabi Muhammad SAW berangkat hijrah ke Yatsrib ditemani sahabatnya bernama ....",["Ali bin Abi Thalib","Utsman bin Affan","Umar bin Khattab","Abu Bakar Ash-Shiddiq"],3,"Abu Bakar Ash-Shiddiq menemani Nabi hijrah, sedangkan Ali menggantikan tidur di tempat Nabi."]
+];
+var TOPICS = [
+  {name:"Wahyu, dakwah, dan akhlak Nabi", from:1, to:16},
+  {name:"Hijrah ke Habasyah", from:17, to:21},
+  {name:"Pemboikotan Bani Hasyim", from:22, to:26},
+  {name:"Dakwah ke Thaif", from:27, to:32},
+  {name:"Isra dan Mi'raj", from:33, to:37},
+  {name:"Baiat Aqabah dan Yatsrib", from:38, to:48},
+  {name:"Hijrah ke Madinah", from:49, to:50}
+];
+var N = QUESTIONS.length;
+var LETTERS = "abcd";
+
+function $(id){ return document.getElementById(id); }
+function h(tag, props){
+  var el = document.createElement(tag);
+  if(props){
+    for(var k in props){
+      var v = props[k];
+      if(k === "class") el.className = v;
+      else if(k === "text") el.textContent = v;
+      else if(k.slice(0,2) === "on") el.addEventListener(k.slice(2), v);
+      else if(v !== false && v != null) el.setAttribute(k, v === true ? "" : v);
+    }
+  }
+  for(var i = 2; i < arguments.length; i++){
+    var c = arguments[i];
+    if(c == null) continue;
+    el.append(c.nodeType ? c : document.createTextNode(String(c)));
+  }
+  return el;
+}
+function topicOf(i){
+  for(var t = 0; t < TOPICS.length; t++){ if(i + 1 >= TOPICS[t].from && i + 1 <= TOPICS[t].to) return TOPICS[t]; }
+  return TOPICS[0];
+}
+
+var state = {
+  phase:"start", tab:"kuis", name:"", kelas:"", idx:0,
+  answers:new Array(N).fill(-1), result:null, showAll:false,
+  isAdmin:false, isOwner:false, rows:[], loading:false, slow:false, dbErr:null
+};
+
+/* Draf di perangkat ini: hanya kenyamanan, halaman tetap jalan tanpa ini */
+var KEY = "kuis-sirah-nabawiyah-draft";
+function readDraft(){
+  try{
+    var d = JSON.parse(localStorage.getItem(KEY) || "null");
+    if(d && Array.isArray(d.answers) && d.answers.length === N) return d;
+  }catch(e){}
+  return null;
+}
+function writeDraft(){
+  try{ localStorage.setItem(KEY, JSON.stringify({name:state.name, kelas:state.kelas, idx:state.idx, answers:state.answers})); }catch(e){}
+}
+function clearDraft(){ try{ localStorage.removeItem(KEY); }catch(e){} }
+
+var draft = readDraft();
+if(draft){
+  state.name = String(draft.name || "");
+  state.kelas = String(draft.kelas || "");
+  state.idx = Math.min(Math.max(draft.idx | 0, 0), N - 1);
+  state.answers = draft.answers.map(function(x){ return (Number.isInteger(x) && x >= 0 && x < 4) ? x : -1; });
+}
+function answeredCount(){ return state.answers.filter(function(a){ return a >= 0; }).length; }
+
+/* ---------- Tampilan ---------- */
+function render(){
+  var inKuis = state.tab === "kuis";
+  $("view-start").hidden = !(inKuis && state.phase === "start");
+  $("view-quiz").hidden = !(inKuis && state.phase === "quiz");
+  $("view-result").hidden = !(inKuis && state.phase === "result");
+  $("view-teacher").hidden = state.tab !== "hasil";
+  $("tab-kuis").setAttribute("aria-selected", inKuis ? "true" : "false");
+  $("tab-hasil").setAttribute("aria-selected", inKuis ? "false" : "true");
+  if(inKuis && state.phase === "start") renderStart();
+  if(inKuis && state.phase === "quiz") renderQuiz();
+  if(inKuis && state.phase === "result") renderResult();
+  if(!inKuis) renderTeacher();
+}
+
+function renderStart(){
+  $("nama").value = state.name;
+  $("kelas").value = state.kelas;
+  $("btn-start").textContent = answeredCount() > 0 ? "Lanjutkan kuis" : "Mulai kuis";
+  var ul = $("topics");
+  if(!ul.children.length){
+    TOPICS.forEach(function(t){
+      ul.append(h("li", null, h("span", {class:"rng", text:"Soal " + t.from + (t.to > t.from ? "–" + t.to : "")}), h("span", {text:t.name})));
+    });
+  }
+}
+
+function updateMeta(){
+  var a = answeredCount();
+  $("qnum").textContent = "Soal " + (state.idx + 1) + " dari " + N;
+  $("answered").textContent = a + " dari " + N + " terjawab";
+  $("bar").style.width = (a / N * 100) + "%";
+  var cells = $("grid").children;
+  for(var i = 0; i < cells.length; i++){
+    cells[i].className = "cell" + (state.answers[i] >= 0 ? " done" : "") + (i === state.idx ? " cur" : "");
+  }
+}
+
+function renderQuiz(){
+  var i = state.idx, q = QUESTIONS[i];
+  $("topic").textContent = topicOf(i).name;
+  $("stem").textContent = q[0];
+  var box = $("opts");
+  box.replaceChildren();
+  q[1].forEach(function(text, k){
+    var input = h("input", {type:"radio", name:"opt", value:String(k)});
+    input.checked = state.answers[i] === k;
+    input.addEventListener("change", function(){
+      state.answers[i] = k;
+      writeDraft();
+      $("confirm").hidden = true;
+      updateMeta();
+    });
+    box.append(h("label", {class:"opt"}, input, h("span", {class:"key", text:LETTERS[k].toUpperCase()}), h("span", {class:"txt", text:text})));
+  });
+  $("prev").disabled = i === 0;
+  $("next").textContent = i === N - 1 ? "Selesai" : "Lanjut";
+  var grid = $("grid");
+  if(grid.children.length !== N){
+    grid.replaceChildren();
+    for(var n = 0; n < N; n++){
+      (function(n){
+        grid.append(h("button", {type:"button", class:"cell", text:String(n + 1), "aria-label":"Soal " + (n + 1), onclick:function(){ go(n); }}));
+      })(n);
+    }
+  }
+  updateMeta();
+}
+
+function go(n){
+  state.idx = Math.min(Math.max(n, 0), N - 1);
+  $("confirm").hidden = true;
+  writeDraft();
+  renderQuiz();
+}
+
+function openConfirm(){
+  var left = N - answeredCount();
+  $("confirm-text").textContent = left > 0
+    ? "Masih ada " + left + " soal yang belum dijawab. Soal kosong dihitung salah. Kirim sekarang?"
+    : "Semua soal sudah dijawab. Kirim jawabanmu sekarang?";
+  $("recheck").textContent = left > 0 ? "Ke soal kosong pertama" : "Periksa lagi";
+  $("confirm").hidden = false;
+}
+
+function submitQuiz(){
+  var score = 0;
+  state.answers.forEach(function(a, i){ if(a === QUESTIONS[i][2]) score++; });
+  state.result = {score:score, answers:state.answers.slice()};
+  state.phase = "result";
+  state.showAll = false;
+  clearDraft();
+  $("confirm").hidden = true;
+  render();
+  window.scrollTo(0, 0);
+  saveResult(state.result);
+}
+
+function renderResult(){
+  var r = state.result;
+  if(!r) return;
+  $("r-who").textContent = state.name + (state.kelas ? " · " + state.kelas : "");
+  $("r-score").textContent = String(r.score);
+  $("r-of").textContent = "/ " + N + " benar";
+  $("r-nilai").textContent = String(Math.round(r.score / N * 100));
+
+  var tb = $("tbars");
+  tb.replaceChildren();
+  TOPICS.forEach(function(t){
+    var total = t.to - t.from + 1, ok = 0;
+    for(var i = t.from - 1; i < t.to; i++){ if(r.answers[i] === QUESTIONS[i][2]) ok++; }
+    tb.append(h("div", {class:"tb"},
+      h("div", {class:"lbl"}, h("span", {text:t.name}), h("span", {text:ok + " / " + total})),
+      h("div", {class:"track"}, h("div", {class:"fill", style:"width:" + (ok / total * 100) + "%"}))
+    ));
+  });
+
+  var list = $("review");
+  list.replaceChildren();
+  var shown = 0;
+  QUESTIONS.forEach(function(q, i){
+    var a = r.answers[i], ok = a === q[2];
+    if(!state.showAll && ok) return;
+    shown++;
+    var chipText = ok ? "Benar" : (a < 0 ? "Tidak dijawab" : "Salah");
+    var item = h("article", {class:"rv"},
+      h("div", {class:"rv-head"}, h("span", {class:"chip " + (ok ? "ok" : "no"), text:chipText}), h("span", {class:"note", text:"Soal " + (i + 1)})),
+      h("p", {class:"rv-q", text:q[0]})
+    );
+    if(!ok && a >= 0) item.append(h("p", {class:"rv-a"}, "Jawabanmu: ", h("strong", {text:LETTERS[a].toUpperCase() + ". " + q[1][a]})));
+    item.append(h("p", {class:"rv-a"}, "Jawaban benar: ", h("strong", {text:LETTERS[q[2]].toUpperCase() + ". " + q[1][q[2]]})));
+    item.append(h("p", {class:"note", text:q[3]}));
+    list.append(item);
+  });
+  if(!shown) list.append(h("p", {class:"note", text:"Semua jawabanmu benar. Tidak ada soal yang perlu dibahas."}));
+  $("rv-title").textContent = state.showAll ? "Pembahasan semua soal" : "Pembahasan soal yang salah";
+  $("rv-toggle").textContent = state.showAll ? "Hanya yang salah" : "Tampilkan semua";
+}
+
+/* ---------- Simpan hasil ke db ---------- */
+function setStatus(kind, text){
+  var el = $("save-status");
+  el.dataset.s = kind;
+  el.textContent = text;
+}
+async function saveResult(r){
+  setStatus("busy", "Mengirim nilai ke guru…");
+  try{
+    var c = window.claude;
+    if(!c || !c.use){ setStatus("local", "Nilai belum terkirim ke guru karena halaman ini dibuka di luar akun Claude. Skor di layar ini tetap berlaku."); return; }
+    var db = await c.use("db");
+    var user = await c.use("user");
+    var uid = user ? await user.id() : null;
+    if(!db || !uid){ setStatus("local", "Nilai belum terkirim ke guru. Masuk ke akun Claude lalu buka lagi tautan ini supaya hasilmu tercatat."); return; }
+    var ref = db.doc("results/" + uid);
+    var prev = null;
+    try{ var s = await ref.get(); if(s.exists) prev = s.data(); }catch(e){}
+    var best = Math.max(prev && typeof prev.bestScore === "number" ? prev.bestScore : 0, r.score);
+    await ref.set({
+      name:state.name, kelas:state.kelas, lastScore:r.score, bestScore:best,
+      attempts:((prev && prev.attempts) || 0) + 1, total:N,
+      answers:r.answers.map(function(a){ return a < 0 ? "" : LETTERS[a]; }),
+      updatedAt:new Date().toISOString()
+    });
+    setStatus("saved", "Nilai sudah terkirim ke guru.");
+  }catch(e){
+    if(e && e.code === "invalid_argument") setStatus("error", "Nilai belum tercatat karena aksesmu hanya untuk melihat. Minta guru memberi akses Kontributor, lalu ulangi kuis.");
+    else setStatus("error", "Nilai belum terkirim. Periksa koneksi, lalu ulangi kuis untuk mengirim lagi.");
+  }
+}
+
+/* ---------- Tampilan guru ---------- */
+function fmtTime(iso){
+  try{ return new Date(iso).toLocaleString("id-ID", {dateStyle:"medium", timeStyle:"short"}); }catch(e){ return ""; }
+}
+function nilai(score){ return Math.round((score || 0) / N * 100); }
+
+function renderTeacher(){
+  var box = $("teacher-body");
+  box.replaceChildren();
+  $("copy").hidden = true;
+  $("tsv").hidden = true;
+  if(state.dbErr){
+    box.append(h("p", {class:"note", text:"Daftar hasil belum bisa dimuat. Buka ulang halaman ini untuk mencoba lagi."}));
+    return;
+  }
+  if(state.loading){
+    box.append(h("p", {class:"note", text: state.slow ? "Data belum terjangkau, mungkin koneksi sedang lambat. Halaman tetap menunggu." : "Memuat hasil…"}));
+    return;
+  }
+  var rows = state.rows.slice().sort(function(a, b){
+    return ((b.bestScore || 0) - (a.bestScore || 0)) || String(a.name).localeCompare(String(b.name));
+  });
+  if(!rows.length){
+    box.append(h("p", {class:"note", text:"Belum ada hasil. Nilai muncul di sini setelah peserta menekan Kirim jawaban. Peserta perlu masuk ke akun Claude dan punya akses Kontributor."}));
+    return;
+  }
+  var bests = rows.map(function(r){ return r.bestScore || 0; });
+  var avg = bests.reduce(function(s, x){ return s + x; }, 0) / bests.length;
+  box.append(h("div", {class:"stats"},
+    h("div", {class:"stat"}, h("b", {text:String(rows.length)}), h("span", {text:"Peserta"})),
+    h("div", {class:"stat"}, h("b", {text:String(Math.round(avg / N * 100))}), h("span", {text:"Rata-rata nilai terbaik"})),
+    h("div", {class:"stat"}, h("b", {text:String(nilai(Math.max.apply(null, bests)))}), h("span", {text:"Tertinggi"})),
+    h("div", {class:"stat"}, h("b", {text:String(nilai(Math.min.apply(null, bests)))}), h("span", {text:"Terendah"}))
+  ));
+
+  var head = h("tr", null,
+    h("th", {text:"Nama"}), h("th", {text:"Kelas"}),
+    h("th", {class:"num", text:"Terakhir"}), h("th", {class:"num", text:"Terbaik"}),
+    h("th", {class:"num", text:"Percobaan"}), h("th", {text:"Waktu"}),
+    state.isOwner ? h("th", {text:""}) : null
+  );
+  var body = h("tbody");
+  rows.forEach(function(r){
+    body.append(h("tr", null,
+      h("td", {text:String(r.name || "Tanpa nama")}),
+      h("td", {text:String(r.kelas || "")}),
+      h("td", {class:"num", text:nilai(r.lastScore) + " (" + (r.lastScore || 0) + "/" + N + ")"}),
+      h("td", {class:"num", text:nilai(r.bestScore) + " (" + (r.bestScore || 0) + "/" + N + ")"}),
+      h("td", {class:"num", text:String(r.attempts || 1)}),
+      h("td", {text:fmtTime(r.updatedAt)}),
+      state.isOwner ? h("td", null, deleteButton(r.id)) : null
+    ));
+  });
+  box.append(h("div", {class:"tablewrap"}, h("table", null, h("thead", null, head), body)));
+
+  var withAns = rows.filter(function(r){ return Array.isArray(r.answers) && r.answers.length === N; });
+  if(withAns.length){
+    var pct = QUESTIONS.map(function(q, i){
+      var L = LETTERS[q[2]];
+      var c = withAns.filter(function(r){ return r.answers[i] === L; }).length;
+      return {i:i, p:c / withAns.length};
+    });
+    var hard = pct.slice().sort(function(a, b){ return (a.p - b.p) || (a.i - b.i); }).slice(0, 5);
+    var ul = h("ul", {class:"hard"});
+    hard.forEach(function(x){
+      ul.append(h("li", null,
+        h("span", {class:"pct", text:Math.round(x.p * 100) + "% benar"}),
+        h("div", null, h("strong", {text:"Soal " + (x.i + 1)}), h("div", {class:"sn", text:QUESTIONS[x.i][0]}))
+      ));
+    });
+    box.append(h("div", null,
+      h("h3", {style:"font-size:15px;margin-bottom:10px", text:"Soal yang paling sering salah"}),
+      ul,
+      h("p", {class:"note", style:"margin-top:10px", text:"Dihitung dari percobaan terakhir tiap peserta."})
+    ));
+  }
+  $("copy").hidden = false;
+  $("copy").onclick = function(){ copyTable(rows); };
+}
+
+function deleteButton(id){
+  var b = h("button", {type:"button", class:"btn small danger", text:"Hapus"});
+  var armed = false, timer = null;
+  b.addEventListener("click", async function(){
+    if(!armed){
+      armed = true; b.textContent = "Yakin hapus?";
+      timer = setTimeout(function(){ armed = false; b.textContent = "Hapus"; }, 4000);
+      return;
+    }
+    clearTimeout(timer);
+    b.disabled = true;
+    try{
+      var db = await window.claude.use("db");
+      await db.doc("results/" + id).delete();
+    }catch(e){ b.disabled = false; armed = false; b.textContent = "Gagal, coba lagi"; }
+  });
+  return b;
+}
+
+async function copyTable(rows){
+  function clean(s){ return String(s == null ? "" : s).replace(/[\t\r\n]+/g, " "); }
+  var lines = [["Nama","Kelas","Nilai terakhir","Nilai terbaik","Percobaan","Waktu"].join("\t")];
+  rows.forEach(function(r){
+    lines.push([clean(r.name), clean(r.kelas), nilai(r.lastScore), nilai(r.bestScore), r.attempts || 1, clean(fmtTime(r.updatedAt))].join("\t"));
+  });
+  var text = lines.join("\n");
+  try{
+    await navigator.clipboard.writeText(text);
+    $("copy-note").textContent = "Tabel disalin.";
+    $("tsv").hidden = true;
+  }catch(e){
+    var ta = $("tsv");
+    ta.hidden = false; ta.value = text; ta.focus(); ta.select();
+    $("copy-note").textContent = "Salin manual dari kotak di bawah.";
+  }
+}
+
+async function initAdmin(){
+  try{
+    var c = window.claude;
+    if(!c || !c.use) return;
+    var user = await c.use("user");
+    if(!user) return;
+    var flags = await Promise.all([user.canEdit(), user.isOwner()]);
+    if(!flags[0]) return;
+    state.isAdmin = true; state.isOwner = flags[1];
+    $("tabs").hidden = false;
+    var db = await c.use("db");
+    if(!db){ state.dbErr = "unavailable"; return; }
+    state.loading = true;
+    var timer = setTimeout(function(){ if(state.loading){ state.slow = true; renderTeacher(); } }, 10000);
+    db.collection("results").onSnapshot(function(snap){
+      clearTimeout(timer);
+      state.loading = false; state.slow = false; state.dbErr = null;
+      state.rows = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+      if(state.tab === "hasil") renderTeacher();
+    }, function(err){
+      clearTimeout(timer);
+      state.loading = false; state.dbErr = (err && err.code) || "error";
+      if(state.tab === "hasil") renderTeacher();
+    });
+  }catch(e){}
+}
+
+/* ---------- Peristiwa ---------- */
+$("form-start").addEventListener("submit", function(e){
+  e.preventDefault();
+  var nm = $("nama").value.trim();
+  if(!nm){ $("nama-err").hidden = false; $("nama").focus(); return; }
+  $("nama-err").hidden = true;
+  state.name = nm; state.kelas = $("kelas").value.trim();
+  state.phase = "quiz";
+  var firstEmpty = state.answers.indexOf(-1);
+  if(answeredCount() === 0) state.idx = 0;
+  else if(firstEmpty >= 0 && state.idx === 0) state.idx = firstEmpty;
+  writeDraft(); render(); window.scrollTo(0, 0);
+});
+$("prev").addEventListener("click", function(){ go(state.idx - 1); });
+$("next").addEventListener("click", function(){
+  if(state.idx === N - 1) openConfirm(); else go(state.idx + 1);
+});
+$("recheck").addEventListener("click", function(){
+  var firstEmpty = state.answers.indexOf(-1);
+  $("confirm").hidden = true;
+  if(firstEmpty >= 0) go(firstEmpty);
+});
+$("send").addEventListener("click", submitQuiz);
+$("rv-toggle").addEventListener("click", function(){ state.showAll = !state.showAll; renderResult(); });
+$("retake").addEventListener("click", function(){
+  state.answers = new Array(N).fill(-1); state.idx = 0; state.result = null; state.phase = "quiz";
+  writeDraft(); render(); window.scrollTo(0, 0);
+});
+$("other").addEventListener("click", function(){
+  state.answers = new Array(N).fill(-1); state.idx = 0; state.result = null; state.phase = "start";
+  state.name = ""; state.kelas = "";
+  clearDraft(); render(); window.scrollTo(0, 0);
+});
+$("tab-kuis").addEventListener("click", function(){ state.tab = "kuis"; render(); });
+$("tab-hasil").addEventListener("click", function(){ state.tab = "hasil"; render(); });
+
+render();
+initAdmin();
+})();
+</script>
+
+</body></html>
